@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { DynamoDB } from 'aws-sdk';
 
 @Injectable()
 export class AppService {
@@ -17,5 +18,14 @@ export class AppService {
         name: 'JavaScript Good Parts',
       },
     ];
+  }
+
+  async findBooks() {
+    const db = new DynamoDB({
+      endpoint: 'http://localhost:4569',
+      region: 'us-east-1',
+    });
+    const res = await db.scan({ TableName: 'mydb' }).promise();
+    return res.Items;
   }
 }

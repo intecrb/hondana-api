@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('books')
+  findAll() {
+    return this.appService.findBooks();
+  }
 }
