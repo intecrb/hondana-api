@@ -20,7 +20,7 @@ import { DynamoDB } from 'aws-sdk';
     },
     {
       provide: 'BOOKS_TABLE',
-      useValue: process.env.NODE_ENV + '-' + 'books',
+      useValue: process.env.NODE_ENV + '_' + 'books',
     },
   ],
 })

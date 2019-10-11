@@ -19,10 +19,6 @@ describe('Books Controller', () => {
           provide: 'DYNAMODB_CLIENT',
           useValue: dynamodb,
         },
-        {
-          provide: 'BOOKS_TABLE',
-          useValue: 'testdb',
-        },
       ],
     }).compile();
 
