@@ -20,9 +20,26 @@ export class BooksService {
     return items;
   }
 
+  async findOne(id: string): Promise<Book> {
+    try {
+      return await this.mapper.get(
+        Object.assign(new Book(), {
+          id,
+        }),
+      );
+    } catch (error) {
+      return null;
+    }
+  }
+
   async createBook(createBookDto: CreateBookDto) {
     const book = new Book();
     book.title = createBookDto.title;
     return await this.mapper.put(book);
   }
+}
+
+interface ErrorResponseForbidden {
+  code: number;
+  message: string;
 }

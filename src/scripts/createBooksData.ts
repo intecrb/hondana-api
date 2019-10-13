@@ -15,15 +15,22 @@ const createBooksData = async () => {
   });
 
   const book001 = Object.assign(new Book(), {
-    id: 111111111,
     title: 'マイクロサービスアーキテクチャ',
   });
   await mapper.put(book001);
   const book002 = Object.assign(new Book(), {
-    id: 222222222,
     title: 'Web API: The Good Parts',
   });
   await mapper.put(book002);
+
+  [...Array(10)].map(() => {
+    const b = Object.assign(new Book(), {
+      title: Math.random()
+        .toString(36)
+        .slice(-8),
+    });
+    mapper.put(b);
+  });
 };
 
 createBooksData();
