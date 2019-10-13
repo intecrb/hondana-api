@@ -3,6 +3,7 @@ import { DynamoDB } from 'aws-sdk';
 import Book from './book';
 import { createDynamoDBDataMapper } from '../mapper';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
+import { CreateBookDto } from './createBook.dto';
 
 @Injectable()
 export class BooksService {
@@ -17,5 +18,11 @@ export class BooksService {
       items.push(item);
     }
     return items;
+  }
+
+  async createBook(createBookDto: CreateBookDto) {
+    const book = new Book();
+    book.title = createBookDto.title;
+    return await this.mapper.put(book);
   }
 }

@@ -36,40 +36,52 @@ describe('BooksService', () => {
     await cleanUp();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('findAll()', () => {
+    it('should be defined', () => {
+      expect(service).toBeDefined();
+    });
+
+    it('should be return a book', async () => {
+      const book = Object.assign(new Book(), {
+        title: 'Web API: The Good Parts',
+      });
+      await mapper.put(book);
+
+      const books = await service.findAll();
+      expect(books[0].id).toBeDefined();
+      expect(books[0].title).toBe('Web API: The Good Parts');
+      expect(books[0].createdAt).toBeDefined();
+    });
+
+    it('should be return two books', async () => {
+      const book001 = Object.assign(new Book(), {
+        title: 'マイクロサービスアーキテクチャ',
+      });
+      await mapper.put(book001);
+      const book002 = Object.assign(new Book(), {
+        title: 'Web API: The Good Parts',
+      });
+      await mapper.put(book002);
+
+      const books = await service.findAll();
+      expect(books).toHaveLength(2);
+    });
   });
 
-  it('should be return a book', async () => {
-    const book = Object.assign(new Book(), {
-      id: 222222222,
-      title: 'Web API: The Good Parts',
-    });
-    await mapper.put(book);
+  describe('createBook()', () => {
+    it('should add a book', async () => {
+      const book = Object.assign(new Book(), {
+        title: 'Web API: The Good Parts',
+      });
 
-    const books = await service.findAll();
-    expect(books[0].id).toBe(222222222);
-    expect(books[0].title).toBe('Web API: The Good Parts');
-  });
+      await service.createBook(book);
 
-  it('should be return two books', async () => {
-    const book001 = Object.assign(new Book(), {
-      id: 111111111,
-      title: 'マイクロサービスアーキテクチャ',
+      const books = await service.findAll();
+      expect(books).toHaveLength(1);
+      expect(books[0].id).toBeDefined();
+      expect(books[0].title).toBe('Web API: The Good Parts');
+      expect(books[0].createdAt).toBeDefined();
     });
-    await mapper.put(book001);
-    const book002 = Object.assign(new Book(), {
-      id: 222222222,
-      title: 'Web API: The Good Parts',
-    });
-    await mapper.put(book002);
-
-    const books = await service.findAll();
-    expect(books).toHaveLength(2);
-    expect(books[0].id).toBe(111111111);
-    expect(books[0].title).toBe('マイクロサービスアーキテクチャ');
-    expect(books[1].id).toBe(222222222);
-    expect(books[1].title).toBe('Web API: The Good Parts');
   });
 
   const cleanUp = async () => {
