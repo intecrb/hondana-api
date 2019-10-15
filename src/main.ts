@@ -8,7 +8,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('Books API Document')
     .setDescription('The books API description')
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .addTag('books')
     .build();
   const document = SwaggerModule.createDocument(app, options);

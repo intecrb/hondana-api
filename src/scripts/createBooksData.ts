@@ -20,6 +20,9 @@ const createBooksData = async () => {
   await mapper.put(book001);
   const book002 = Object.assign(new Book(), {
     title: 'Web API: The Good Parts',
+    author: '水野 貴明',
+    isbn10: '4873116864',
+    isbn13: '978-4873116860',
   });
   await mapper.put(book002);
 

@@ -37,10 +37,6 @@ describe('BooksService', () => {
   });
 
   describe('findAll()', () => {
-    it('should be defined', () => {
-      expect(service).toBeDefined();
-    });
-
     it('should be return a book', async () => {
       const book = Object.assign(new Book(), {
         title: 'Web API: The Good Parts',

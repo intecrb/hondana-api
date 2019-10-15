@@ -24,6 +24,30 @@ export default class Book implements IBook {
   })
   title: string;
 
+  @attribute()
+  @ApiModelProperty({
+    type: 'string',
+    description: 'The auther of book',
+    example: '水野 貴明',
+  })
+  author?: string;
+
+  @attribute()
+  @ApiModelProperty({
+    type: 'string',
+    description: 'The International Standard Book Number (isbn) of book',
+    example: '4873116864',
+  })
+  isbn10?: string;
+
+  @attribute()
+  @ApiModelProperty({
+    type: 'string',
+    description: 'The International Standard Book Number (isbn) of book',
+    example: '978-4873116860',
+  })
+  isbn13?: string;
+
   @attribute({ defaultProvider: () => new Date() })
   @ApiModelProperty({
     type: 'string',
