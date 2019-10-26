@@ -9,7 +9,9 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "localstack": "docker-compose -f ./docker/docker-compose.yaml up -d",
-    "db:init": "NODE_ENV=dev ts-node src/scripts/createBooksData.ts",
+    "db:init:table": "NODE_ENV=dev ts-node src/scripts/initTable.ts",
+    "db:put:data": "NODE_ENV=dev ts-node src/scripts/putBooks.ts",
+    "db:put:data:random": "NODE_ENV=dev ts-node src/scripts/putBooksRandom.ts",
     "db:ui": "DYNAMO_ENDPOINT=http://localhost:4569 AWS_REGION=eu-west-1 AWS_ACCESS_KEY_ID=local AWS_SECRET_ACCESS_KEY=local dynamodb-admin",
     "start": "nest start",
     "start:dev": "NODE_ENV=dev nest start --watch",
@@ -29,6 +31,8 @@
     "@nestjs/platform-express": "^6.7.2",
     "@types/aws-sdk": "^2.7.0",
     "aws-sdk": "^2.544.0",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.9.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3"
@@ -56,7 +60,11 @@
     "typescript": "^3.6.3"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "src",
     "testRegex": ".spec.ts$",
     "transform": {

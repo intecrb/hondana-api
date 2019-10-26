@@ -1,5 +1,5 @@
 import { createDynamoDBDataMapper } from '../mapper';
-import Book from '../books/book';
+import Book from '../books/domain/book';
 import { DynamoDB } from 'aws-sdk';
 
 const createBooksData = async () => {
@@ -8,11 +8,6 @@ const createBooksData = async () => {
     region: 'us-east-1',
   });
   const mapper = createDynamoDBDataMapper(dynamodb);
-
-  await mapper.createTable(Book, {
-    readCapacityUnits: 5,
-    writeCapacityUnits: 5,
-  });
 
   const book001 = Object.assign(new Book(), {
     title: 'マイクロサービスアーキテクチャ',
@@ -26,14 +21,16 @@ const createBooksData = async () => {
   });
   await mapper.put(book002);
 
-  [...Array(10)].map(() => {
-    const b = Object.assign(new Book(), {
-      title: Math.random()
-        .toString(36)
-        .slice(-8),
-    });
-    mapper.put(b);
-  });
+  await Promise.all(
+    [...Array(100)].map(() => {
+      const book = Object.assign(new Book(), {
+        title: Math.random()
+          .toString(36)
+          .slice(-8),
+      });
+      mapper.put(book);
+    }),
+  );
 };
 
 createBooksData();

@@ -1,37 +1,41 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
-import Book from './book';
+import Book from './domain/book';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { CreateBookDto } from './createBook.dto';
-import { ErrorResponseModel } from '../response/errorResponse';
+import { CreateBookDto } from './requestDto/createBook.dto';
+import { ErrorResponse } from '../response/errorResponse';
+import { GetBooksResponse } from './responseDto/getBooksResponse';
+import { GetBooksDto } from './requestDto/getBooks.dto';
 
 @Controller('books')
+@ApiForbiddenResponse({ description: 'FORBIDDEN', type: ErrorResponse })
+@ApiBadRequestResponse({
+  description: 'BAD REQUEST',
+  type: ErrorResponse,
+})
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get()
-  @ApiOkResponse({ description: 'ok' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  findAll(): Promise<Book[]> {
-    return this.booksService.findAll();
+  @ApiOkResponse({ description: 'OK', type: GetBooksResponse })
+  @ApiNotFoundResponse({ description: 'NOT FOUND', type: ErrorResponse })
+  findAll(
+    @Query() getBooksDto?: GetBooksDto,
+  ): Promise<GetBooksResponse | ErrorResponse> {
+    return this.booksService.findAll(getBooksDto.next);
   }
 
   @Get(':id')
-  @ApiOkResponse({ description: 'ok' })
-  @ApiNotFoundResponse({ description: 'not found', type: ErrorResponseModel })
-  async findOne(@Param('id') id: string): Promise<Book | ErrorResponseModel> {
-    const book = await this.booksService.findOne(id);
-    return book
-      ? book
-      : Object.assign(new ErrorResponseModel(), {
-          code: 404,
-          message: 'not found',
-        });
+  @ApiOkResponse({ description: 'OK', type: Book })
+  @ApiNotFoundResponse({ description: 'NOT FOUND', type: ErrorResponse })
+  async findOne(@Param('id') id: string): Promise<Book | ErrorResponse> {
+    return await this.booksService.findOne(id);
   }
 
   @Post()
@@ -39,7 +43,7 @@ export class BooksController {
     description: 'The record has been successfully created.',
     type: Book,
   })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  @ApiForbiddenResponse({ description: 'FORBIDDEN' })
   create(@Body() createBookDto: CreateBookDto) {
     return this.booksService.createBook(createBookDto);
   }

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BooksService } from './books.service';
 import { DynamoDB } from 'aws-sdk';
-import Book from './book';
+import Book from './domain/book';
 import { createDynamoDBDataMapper } from '../mapper';
 
 describe('BooksService', () => {
@@ -43,10 +43,10 @@ describe('BooksService', () => {
       });
       await mapper.put(book);
 
-      const books = await service.findAll();
-      expect(books[0].id).toBeDefined();
-      expect(books[0].title).toBe('Web API: The Good Parts');
-      expect(books[0].createdAt).toBeDefined();
+      const res = await service.findAll();
+      expect(res.books[0].id).toBeDefined();
+      expect(res.books[0].title).toBe('Web API: The Good Parts');
+      expect(res.books[0].createdAt).toBeDefined();
     });
 
     it('should be return two books', async () => {
@@ -59,8 +59,8 @@ describe('BooksService', () => {
       });
       await mapper.put(book002);
 
-      const books = await service.findAll();
-      expect(books).toHaveLength(2);
+      const res = await service.findAll();
+      expect(res.books).toHaveLength(2);
     });
   });
 
@@ -72,11 +72,11 @@ describe('BooksService', () => {
 
       await service.createBook(book);
 
-      const books = await service.findAll();
-      expect(books).toHaveLength(1);
-      expect(books[0].id).toBeDefined();
-      expect(books[0].title).toBe('Web API: The Good Parts');
-      expect(books[0].createdAt).toBeDefined();
+      const res = await service.findAll();
+      expect(res.books).toHaveLength(1);
+      expect(res.books[0].id).toBeDefined();
+      expect(res.books[0].title).toBe('Web API: The Good Parts');
+      expect(res.books[0].createdAt).toBeDefined();
     });
   });
 

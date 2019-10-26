@@ -1,9 +1,11 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { DynamoDB } from 'aws-sdk';
-import Book from './book';
+import Book from './domain/book';
 import { createDynamoDBDataMapper } from '../mapper';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import { CreateBookDto } from './createBook.dto';
+import { CreateBookDto } from './requestDto/createBook.dto';
+import { GetBooksResponse } from './responseDto/getBooksResponse';
+import { ErrorResponse } from '../response/errorResponse';
 
 @Injectable()
 export class BooksService {
@@ -12,24 +14,48 @@ export class BooksService {
     this.mapper = createDynamoDBDataMapper(this.dynamodb);
   }
 
-  async findAll(): Promise<Book[]> {
-    const items: Book[] = [];
-    for await (const item of this.mapper.scan(Book)) {
-      items.push(item);
-    }
-    return items;
+  public async findAll(next?: string): Promise<GetBooksResponse> {
+    const items = await this.getPagingBooks(next);
+    return {
+      books: items ? items : [],
+      next: items ? items[items.length - 1].id : null,
+    };
   }
 
-  async findOne(id: string): Promise<Book> {
+  private getPagingBooks = async (next?: string) => {
+    const paginator = this.mapper
+      .scan(Book, {
+        limit: 10,
+        startKey: next ? { id: next } : null,
+      })
+      .pages();
+
+    for await (const pageItems of paginator) {
+      return pageItems;
+    }
+  };
+
+  public async findOne(id: string): Promise<Book | ErrorResponse> {
+    let book: Book;
+    // TODO: throwして404をcatchするException Filterを実装したい https://docs.nestjs.com/exception-filters
     try {
-      return await this.mapper.get(
+      book = await this.mapper.get(
         Object.assign(new Book(), {
           id,
         }),
       );
     } catch (error) {
-      return null;
+      Logger.log(error);
+      book = null;
     }
+
+    return book
+      ? book
+      : Object.assign(new ErrorResponse(), {
+          statusCode: 404,
+          error: 'Not Found',
+          message: `It was not found with the specified request id: ${id}`,
+        });
   }
 
   async createBook(createBookDto: CreateBookDto) {
@@ -37,9 +63,4 @@ export class BooksService {
     book.title = createBookDto.title;
     return await this.mapper.put(book);
   }
-}
-
-interface ErrorResponseForbidden {
-  code: number;
-  message: string;
 }
