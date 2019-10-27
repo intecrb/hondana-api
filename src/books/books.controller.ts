@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
-import Book from './domain/book';
+import Book from './model/book';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -28,7 +28,7 @@ export class BooksController {
   findAll(
     @Query() getBooksDto?: GetBooksDto,
   ): Promise<GetBooksResponse | ErrorResponse> {
-    return this.booksService.findAll(getBooksDto.next);
+    return this.booksService.findAll(getBooksDto.next, getBooksDto.limit);
   }
 
   @Get(':id')

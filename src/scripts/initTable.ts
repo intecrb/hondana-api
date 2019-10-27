@@ -1,5 +1,5 @@
 import { createDynamoDBDataMapper } from '../mapper';
-import Book from '../books/domain/book';
+import Book from '../books/model/book';
 import { DynamoDB } from 'aws-sdk';
 
 const initTable = async () => {

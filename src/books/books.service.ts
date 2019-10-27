@@ -1,6 +1,6 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { DynamoDB } from 'aws-sdk';
-import Book from './domain/book';
+import Book from './model/book';
 import { createDynamoDBDataMapper } from '../mapper';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
 import { CreateBookDto } from './requestDto/createBook.dto';
@@ -14,18 +14,21 @@ export class BooksService {
     this.mapper = createDynamoDBDataMapper(this.dynamodb);
   }
 
-  public async findAll(next?: string): Promise<GetBooksResponse> {
-    const items = await this.getPagingBooks(next);
+  public async findAll(
+    next?: string,
+    limit?: number,
+  ): Promise<GetBooksResponse> {
+    const items = await this.getPagingBooks(next, limit);
     return {
-      books: items ? items : [],
-      next: items ? items[items.length - 1].id : null,
+      books: items.length ? items : [],
+      next: items.length ? items[items.length - 1].id : null,
     };
   }
 
-  private getPagingBooks = async (next?: string) => {
+  private getPagingBooks = async (next?: string, limit?: number) => {
     const paginator = this.mapper
       .scan(Book, {
-        limit: 10,
+        limit: limit ? limit : 10,
         startKey: next ? { id: next } : null,
       })
       .pages();

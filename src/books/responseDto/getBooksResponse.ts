@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import Book from '../domain/book';
+import Book from '../model/book';
 
 export class GetBooksResponse {
   @ApiModelProperty({ type: Book, isArray: true })
