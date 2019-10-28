@@ -11,11 +11,15 @@ const createBooksData = async () => {
 
   const book001 = Object.assign(new Book(), {
     title: 'マイクロサービスアーキテクチャ',
+    imgUrl:
+      'https://images-na.ssl-images-amazon.com/images/I/51IhSDZIJqL._SX352_BO1,204,203,200_.jpg',
   });
   await mapper.put(book001);
   const book002 = Object.assign(new Book(), {
     title: 'Web API: The Good Parts',
     author: '水野 貴明',
+    imgUrl:
+      'https://images-na.ssl-images-amazon.com/images/I/51GHwTNJgSL._SX389_BO1,204,203,200_.jpg',
     isbn10: '4873116864',
     isbn13: '978-4873116860',
   });
@@ -27,6 +31,8 @@ const createBooksData = async () => {
         title: Math.random()
           .toString(36)
           .slice(-8),
+        imgUrl:
+          'https://images-na.ssl-images-amazon.com/images/I/51IhSDZIJqL._SX352_BO1,204,203,200_.jpg',
       });
       mapper.put(book);
     }),

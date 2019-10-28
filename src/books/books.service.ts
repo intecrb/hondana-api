@@ -29,7 +29,7 @@ export class BooksService {
     const paginator = this.mapper
       .scan(Book, {
         limit: limit ? limit : 10,
-        startKey: next ? { id: next } : null,
+        startKey: { id: next },
       })
       .pages();
 

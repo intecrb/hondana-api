@@ -35,6 +35,15 @@ export default class Book implements IBook {
   @attribute()
   @ApiModelProperty({
     type: 'string',
+    description: 'The image url of book',
+    example:
+      'https://images-na.ssl-images-amazon.com/images/I/51GHwTNJgSL._SX389_BO1,204,203,200_.jpg',
+  })
+  imgUrl?: string;
+
+  @attribute()
+  @ApiModelProperty({
+    type: 'string',
     description: 'The International Standard Book Number (isbn) of book',
     example: '4873116864',
   })
