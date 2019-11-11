@@ -4,9 +4,19 @@ import { DynamoDB } from 'aws-sdk';
 
 const initTable = async () => {
   try {
+    // const dynamodb = new DynamoDB({
+    //   // endpoint: 'http://localhost:4569',
+    //   // region: '  us-east-1',
+    //   region: 'ap-northeast-1',
+    // });
+
+    const proxy = require('proxy-agent');
     const dynamodb = new DynamoDB({
-      endpoint: 'http://localhost:4569',
-      region: 'us-east-1',
+      region: 'ap-northeast-1',
+    });
+    // プロキシの設定
+    dynamodb.config.update({
+      httpOptions: { agent: proxy('http://proxy2.ibis.intec.co.jp:8080') },
     });
     const mapper = createDynamoDBDataMapper(dynamodb);
 

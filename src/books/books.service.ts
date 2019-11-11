@@ -19,6 +19,7 @@ export class BooksService {
     limit?: number,
   ): Promise<GetBooksResponse> {
     const items = await this.getPagingBooks(next, limit);
+    Logger.log(items);
     return {
       books: items.length ? items : [],
       next: items.length ? items[items.length - 1].id : null,
@@ -32,14 +33,18 @@ export class BooksService {
         startKey: { id: next },
       })
       .pages();
+    Logger.log(paginator);
 
     for await (const pageItems of paginator) {
+      Logger.log(pageItems);
       return pageItems;
     }
   };
 
   public async findOne(id: string): Promise<Book | ErrorResponse> {
     let book: Book;
+
+    Logger.log(id);
     // TODO: throwして404をcatchするException Filterを実装したい https://docs.nestjs.com/exception-filters
     try {
       book = await this.mapper.get(
@@ -47,6 +52,7 @@ export class BooksService {
           id,
         }),
       );
+      Logger.log(book);
     } catch (error) {
       Logger.log(error);
       book = null;
