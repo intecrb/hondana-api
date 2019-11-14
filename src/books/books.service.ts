@@ -19,7 +19,11 @@ export class BooksService {
     limit?: number,
   ): Promise<GetBooksResponse> {
     const items = await this.getPagingBooks(next, limit);
-    Logger.log(items);
+    // const items = [];
+    // for await (const item of this.mapper.scan(Book)) {
+    //   items.push(item);
+    // }
+    // Logger.log(items);
     return {
       books: items.length ? items : [],
       next: items.length ? items[items.length - 1].id : null,
@@ -35,10 +39,24 @@ export class BooksService {
       .pages();
     Logger.log(paginator);
 
+    const items = [];
     for await (const pageItems of paginator) {
       Logger.log(pageItems);
-      return pageItems;
+      items.push(pageItems);
     }
+
+    const nextPaninator = this.mapper
+      .scan(Book, {
+        limit: limit ? limit : 10,
+        startKey: paginator.lastEvaluatedKey,
+      })
+      .pages();
+    for await (const pageItems of nextPaninator) {
+      Logger.log(pageItems);
+      items.push(pageItems);
+    }
+
+    return items;
   };
 
   public async findOne(id: string): Promise<Book | ErrorResponse> {

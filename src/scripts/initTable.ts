@@ -21,12 +21,18 @@ const initTable = async () => {
     const mapper = createDynamoDBDataMapper(dynamodb);
 
     await mapper.ensureTableNotExists(Book);
+    // tslint:disable-next-line: no-console
+    console.log('DELETED TABLE');
 
     await mapper.createTable(Book, {
       readCapacityUnits: 5,
       writeCapacityUnits: 5,
     });
+    await mapper.ensureTableNotExists(Book);
+    // tslint:disable-next-line: no-console
+    console.log('CREATED TABLE');
   } catch (error) {
+    // tslint:disable-next-line: no-console
     console.log(error);
   }
 };
